@@ -1,0 +1,15 @@
+
+RelaBee Website License
+
+Copyright (C) 2025 RelaBee
+
+All rights reserved.
+
+This code is the exclusive property of the RelaBee project. Unauthorized reproduction, modification, or distribution of any part of this website is strictly prohibited without explicit written permission from the project owner.
+
+Permissions: 
+- Viewing the source code is allowed for educational and transparency purposes.
+- Modification or redistribution is not permitted.
+
+Disclaimer:
+RelaBee assumes no responsibility for the misuse of this code or the consequences of its unauthorized modification.
