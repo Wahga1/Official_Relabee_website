@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RelaBee - Built on Connections and Trust</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+    <script src="https://unpkg.com/@web3-onboard/core"></script>
+    <script src="https://unpkg.com/@web3-onboard/walletconnect"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(180deg, #fffbee, #ffcc00);
+            color: #333;
+        }
+
+        header {
+            background: url('honeycomb-pattern.png') center/cover no-repeat;
+            text-align: center;
+            padding: 40px;
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .header-title {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ffbf00;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 0;
+        }
+
+        .section {
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 1200px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            margin: 20px auto;
+            height: 20px;
+            width: 80%;
+            background: #e6e6e6;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar .progress {
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, #ffbf00, #ff9f00);
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ffbf00, #ff9f00);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #e6ac00, #cc8700);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #ffbf00;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="header-title">RelaBee</h1>
+        <p>In Connections We Trust</p>
+    </header>
+
+    <section class="section">
+        <h2>Join the RelaBee Presale!</h2>
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+        <p>Current Price: 1 REL = $0.000012</p>
+        <div class="cta-buttons">
+            <button id="connectWallet">Connect Wallet</button>
+            <button id="buyTokens">Buy Tokens</button>
+        </div>
+        <input type="text" id="ethAmount" placeholder="Enter ETH amount">
+        <p id="transactionStatus"></p>
+    </section>
+
+    <section class="section">
+        <h2>White Paper</h2>
+        <a href="RelaBee_Whitepaper.pdf" download><button>Download White Paper</button></a>
+    </section>
+
+    <section class="section">
+        <h2>Tokenomics</h2>
+        <img src="tokenomics-chart.png" alt="Tokenomics Chart" style="width:100%;">
+    </section>
+
+    <footer>
+        &copy; 2025 RelaBee - Built on Connections and Trust
+    </footer>
+
+    <script>
+        const presaleAddress = "0x43fc27e94977ec4cfbb641c50e736c68a45b64a3";
+        const presaleABI = [
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_fundsWallet",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": true,
+                        "internalType": "address",
+                        "name": "contributor",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "Contribution",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": true,
+                        "internalType": "address",
+                        "name": "owner",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "FundsWithdrawn",
+                "type": "event"
+            },
+            {
+                "inputs": [],
+                "name": "contribute",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "name": "contributions",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "fundsWallet",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_contributor",
+                        "type": "address"
+                    }
+                ],
+                "name": "getContribution",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "owner",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "presalePrice",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "totalCollected",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "withdrawFunds",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ];
+
+        let provider, signer;
+
+        // Function to Connect Wallet
+        async function connectWallet() {
+            if (typeof window.ethereum !== "undefined") {
+                try {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await provider.send("eth_requestAccounts", []);
+                    signer = provider.getSigner();
+                    const walletAddress = await signer.getAddress();
+
+                    // Display Wallet Address on UI
+                    document.getElementById("walletAddress").innerText = `Connected: ${walletAddress}`;
+                    localStorage.setItem("walletAddress", walletAddress);
+
+                } catch (error) {
+                    alert("Wallet connection failed. Please try again.");
+                    console.error(error);
+                }
+            } else {
+                alert("MetaMask is required. Please install it to proceed.");
+            }
+        }
+
+        // Function to Buy Tokens
+        async function buyTokens() {
+            const ethAmount = document.getElementById("ethAmount").value;
+            if (!ethAmount) {
+                alert("Please enter an ETH amount.");
+                return;
+            }
+
+            if (typeof window.ethereum !== "undefined") {
+                try {
+                    const presaleContract = new ethers.Contract(presaleAddress, presaleABI, signer);
+                    const tx = await presaleContract.contribute({ value: ethers.utils.parseEther(ethAmount) });
+
+                    document.getElementById("transactionStatus").innerText = "Transaction sent. Waiting for confirmation...";
+                    await tx.wait();
+                    document.getElementById("transactionStatus").innerText = "Purchase successful!";
+
+                    alert("Tokens purchased successfully!");
+
+                } catch (error) {
+                    console.error("Transaction failed:", error);
+                    document.getElementById("transactionStatus").innerText = "Transaction failed!";
+                }
+            } else {
+                alert("MetaMask is required to perform this action.");
+            }
+        }
+
+        // Function to Check If Wallet is Already Connected
+        function checkWalletConnection() {
+            const storedWallet = localStorage.getItem("walletAddress");
+            if (storedWallet) {
+                document.getElementById("walletAddress").innerText = `Connected: ${storedWallet}`;
+            }
+        }
+
+        // Call checkWalletConnection when the page loads
+        window.onload = checkWalletConnection;
+
+        // Attach Event Listeners
+        document.getElementById("connectWallet").addEventListener("click", connectWallet);
+        document.getElementById("buyTokens").addEventListener("click", buyTokens);
+    </script>
+</body>
+</html>
